@@ -15,11 +15,14 @@ from compas.geometry import Vector
 #  - Try to find an optimal configuration for each so that the motion from one config to the next is minimized
 def calculate_ik_for_frames(robot, frames):
     configs = []
+
     config = robot.zero_configuration()
     for f in frames:
         config = robot.inverse_kinematics(f, config)
         configs.append(config)
+
     return configs
+
 
 # Step 2: store all found configurations in a JSON file using compas.json_dump or compas.json_dumps
 def store_configurations(configurations, filename):
