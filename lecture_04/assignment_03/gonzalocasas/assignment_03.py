@@ -1,19 +1,3 @@
-# Assignment 03
-
-Using inverse kinematics
-
-* Start the MoveIt Noetic container for a UR3e on your laptop
-* Use the `RosClient` to load the robot
-* Taking a robot and a list of frames as parameter, calculate a feasible configuration for each of the frames
-* Try to find an optimal start_configuration for each so that the motion from one config to the next is minimized
-* Store all found configurations in a JSON file using `compas.json_dump` or `compas.json_dumps`
-* Commit the `assignment_03.py` AND the `assignment_03.json` file in your submission
-
-## How to start
-
-Use the following code as a starting point for your assignment:
-
-```python
 """Assignment 03: Using inverse kinematics
 """
 import os
@@ -31,14 +15,21 @@ from compas.geometry import Vector
 #  - Try to find an optimal start_configuration for each so that the motion from one config to the next is minimized
 def calculate_ik_for_frames(robot, frames):
     configs = []
-    # ...
+    last_config = robot.zero_configuration()
+    last_config.joint_values = (0.224, -2.592, -1.066, -4.195, -1.571, 4.937)
+
+    for frame in frames:
+        config = robot.inverse_kinematics(frame, last_config)
+        last_config = config
+        configs.append(config)
+
     return configs
 
 
 # Step 2: store all found configurations in a JSON file using compas.json_dump or compas.json_dumps
 def store_configurations(configurations, filename):
-    # ...
-    pass
+    compas.json_dump(configurations, filename)
+
 
 # Use the following to test from the command line
 # Or copy solution_viewer.ghx next to the folder where you created assignment_03.py to visualize the same in Grasshopper
@@ -69,48 +60,3 @@ if __name__ == '__main__':
         filename = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assignment_03.json')
         store_configurations(configurations, filename)
         print("Stored results in {}".format(filename))
-```
-
-## Expected result
-
-![The result](robot_ik.png)
-
-## How to submit your assignment
-
-1. You should have forked this repository last week, if not, check [assignment submission instructions in lecture 02](../../lecture_02/assignment_01#how-to-submit-your-assignment).
-2. Make sure your local clone is up to date
-
-       (fs2022) git checkout main
-       (fs2022) git pull origin
-
-3. Use a branch called `assignment-03` for this week's assignment
-
-       (fs2022) git checkout -b assignment-03
-       (fs2022) git push -u assignments assignment-03
-
-4. Create a folder with your name and last name, eg. `david_bowie` (make sure it is inside the current assignment folder)
-5. Create a Python file named `assignment_03.py` and paste the starting point code.
-6. For visual inspection, copy the file `solution_viewer.ghx` in the same folder of your `assignment_03.py`.
-6. Solve the coding assignment and commit both the Python file and the JSON file
-    <details><summary><small>(How do I commit?)</small></summary>
-    <p>
-
-    Usually, commits are done from a visual client or VS code,
-    but you can also commit your changes from the command line:
-
-       (fs2022) git add lecture_04/assignment_03/david_bowie/\* && git commit -m "hello world"
-
-    
-    </p>
-    </details>
-
-8. Once you're ready to submit, push the changes:
-
-       (fs2022) git push assignments
-
-9. And create a pull request (<small>[What's a pull request?](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)</small>)
-
-    1. Open your browser and go to your fork
-    2. Create the pull request clicking `Compare & pull request` and follow the instructions
-
-    ![Start a pull request](../../.github/pull-request.png)
